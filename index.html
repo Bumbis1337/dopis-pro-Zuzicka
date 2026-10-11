@@ -1,63 +1,39 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dopis pro Tebe</title>
+    <title>Tajný Dopis Pro Tebe ❤️</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Dancing Script & Cormorant Garamond -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- JS Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        :root {
-            --bg-color: #1a0b12;
-            --envelope-color: #8b263e;
-            --envelope-dark: #631728;
-            --envelope-border: #4d0f1d;
-            --paper-color: #fcf8f2;
-            --text-color: #2b1e1a;
-            --accent-color: #c94a63;
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background: radial-gradient(circle at center, #2c121e 0%, var(--bg-color) 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .font-serif-custom {
             font-family: 'Cormorant Garamond', serif;
-            overflow-x: hidden;
-            position: relative;
-            padding: 20px;
+        }
+        .font-sans-custom {
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .hearts-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .floating-heart {
-            position: absolute;
-            color: rgba(212, 74, 99, 0.25);
-            animation: floatUp linear infinite;
-            user-select: none;
-        }
-
+        /* Ambient Floating Hearts Animation */
         @keyframes floatUp {
             0% {
-                transform: translateY(105vh) scale(0.5) rotate(0deg);
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
                 opacity: 0;
             }
             20% {
@@ -69,318 +45,356 @@
             }
         }
 
-        .wrapper {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 650px;
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 8s linear infinite;
         }
 
-        .envelope-container {
-            position: relative;
-            width: 100%;
-            max-width: 450px;
-            height: 300px;
-            cursor: pointer;
+        /* Envelope 3D Layout */
+        .envelope-wrapper {
             perspective: 1000px;
-            transition: transform 0.3s ease;
-        }
-
-        .envelope-container:hover {
-            transform: translateY(-5px);
         }
 
         .envelope {
             position: relative;
-            width: 100%;
-            height: 100%;
-            background-color: var(--envelope-color);
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            width: 320px;
+            height: 220px;
+            background-color: #f3d5d8;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 20px 40px rgba(186, 110, 120, 0.25), 0 10px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 640px) {
+            .envelope {
+                width: 440px;
+                height: 290px;
+            }
         }
 
         .envelope-flap {
             position: absolute;
             top: 0;
             left: 0;
-            width: 0;
-            height: 0;
-            border-left: 225px solid transparent;
-            border-right: 225px solid transparent;
-            border-top: 160px solid var(--envelope-dark);
-            transform-origin: top;
-            transition: transform 0.6s ease-in-out;
-            z-index: 3;
-        }
-
-        .envelope-pocket {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-left: 225px solid var(--envelope-color);
-            border-right: 225px solid var(--envelope-color);
-            border-bottom: 150px solid var(--envelope-border);
-            border-radius: 0 0 8px 8px;
-            z-index: 2;
-        }
-
-        .seal {
-            position: absolute;
-            top: 140px;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 65px;
-            height: 65px;
-            background: radial-gradient(circle, #e63946 0%, #b71c1c 100%);
-            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 0, 50% 55%, 100% 0);
+            background-color: #e8bdc1;
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s, z-index 0.1s 0.5s;
             z-index: 4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
-            border: 2px dashed rgba(255,255,255,0.2);
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
         }
 
-        .seal::before {
-            content: '♥';
-            font-size: 28px;
-            color: #ffdde1;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .instruction-text {
-            color: #e0a96d;
-            margin-top: 25px;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-            animation: pulse 2s infinite;
-            text-align: center;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        .letter {
-            position: absolute;
-            top: 10px;
-            left: 5%;
-            width: 90%;
-            background: var(--paper-color);
-            background-image: linear-gradient(#e8d8c8 1px, transparent 1px);
-            background-size: 100% 2em;
-            padding: 40px 30px;
-            border-radius: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            color: var(--text-color);
-            z-index: 1;
-            transition: all 0.8s ease-in-out;
-            opacity: 0;
-            transform: translateY(0);
-        }
-
-        .wrapper.open .envelope-flap {
+        .envelope.open .envelope-flap {
             transform: rotateX(180deg);
             z-index: 1;
         }
 
-        .wrapper.open .seal {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.5);
-            pointer-events: none;
-        }
-
-        .wrapper.open .letter {
-            position: relative;
+        .envelope-pocket {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            opacity: 1;
-            transform: translateY(0);
-            z-index: 10;
-            margin-top: 20px;
-            animation: slideOut 1s forwards 0.4s;
+            height: 100%;
+            clip-path: polygon(0 100%, 50% 45%, 100% 100%, 0 100%, 0 0, 50% 45%, 0 100%, 100% 0, 50% 45%, 100% 100%);
+            background-color: #ebd2d5;
+            z-index: 3;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
 
-        .wrapper.open .envelope-container,
-        .wrapper.open .instruction-text {
-            display: none;
-        }
-
-        @keyframes slideOut {
-            0% {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .letter-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-        }
-
-        .letter-header h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.8rem;
-            color: var(--accent-color);
-        }
-
-        .letter-body {
-            font-size: 1.25rem;
-            line-height: 2em;
-            text-align: justify;
-        }
-
-        .letter-body p {
-            margin-bottom: 1.5em;
-            text-indent: 1.5em;
-        }
-
-        .letter-greeting {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #5a1827;
-        }
-
-        .letter-footer {
-            margin-top: 40px;
+        /* Wax Seal */
+        .wax-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #b91c1c, #881337);
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            font-family: 'Dancing Script', cursive;
+            align-items: center;
+            justify-content: center;
+            color: #fef2f2;
+            box-shadow: 0 4px 10px rgba(136, 19, 55, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .letter-signature {
-            font-size: 2rem;
-            color: var(--accent-color);
-            text-align: right;
+        .wax-seal:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(136, 19, 55, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
         }
 
-        .letter-date {
-            font-size: 1.2rem;
-            color: #777;
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
+        .envelope.open .wax-seal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        @media (max-width: 500px) {
-            .envelope-container {
-                height: 240px;
-            }
-            .envelope-flap, .envelope-pocket {
-                border-left-width: 175px;
-                border-right-width: 175px;
-            }
-            .envelope-flap {
-                border-top-width: 120px;
-            }
-            .envelope-pocket {
-                border-bottom-width: 120px;
-            }
-            .seal {
-                top: 110px;
-                width: 50px;
-                height: 50px;
-            }
-            .seal::before {
-                font-size: 20px;
-            }
-            .letter-header h1 {
-                font-size: 2.2rem;
-            }
-            .letter-body {
-                font-size: 1.1rem;
-            }
+        /* Parchment Texture */
+        .parchment {
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#f3ece1 1px, transparent 0);
+            background-size: 24px 24px;
+            box-shadow: inset 0 0 40px rgba(210, 180, 140, 0.2), 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(243, 236, 225, 0.5);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d4a3a8;
+            border-radius: 3px;
         }
     </style>
 </head>
-<body>
 
-    <div class="hearts-bg" id="heartsBg"></div>
+<body class="h-full bg-gradient-to-br from-rose-100 via-pink-50 to-amber-50 text-slate-800 font-sans-custom overflow-x-hidden selection:bg-rose-200 selection:text-rose-900 min-h-screen">
 
-    <div class="wrapper" id="wrapper">
-        <div class="envelope-container" onclick="openLetter()">
-            <div class="envelope">
-                <div class="envelope-flap"></div>
-                <div class="envelope-pocket"></div>
-                <div class="seal"></div>
-            </div>
+    <!-- Container pro padající srdíčka -->
+    <div id="heartsContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Romantická hudba na pozadí -->
+    <audio id="romanticAudio" loop preload="auto">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-view-2856.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Horní lišta pouze s tlačítkem hudby -->
+    <header class="fixed top-0 left-0 right-0 z-40 p-4 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center gap-2 bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-rose-200/50">
+            <i class="fa-solid fa-heart text-rose-500 text-sm"></i>
+            <span class="text-xs font-semibold text-rose-900 tracking-wide uppercase">Dopis s Láskou</span>
         </div>
 
-        <div class="instruction-text" id="instruction">
-            Klikni na obálku pro otevření dopisu ✉
+        <div class="flex items-center gap-2">
+            <!-- Tlačítko Zapnutí / Vypnutí Hudby -->
+            <button id="audioToggle" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-white/80 hover:bg-white text-rose-700 shadow-sm border border-rose-200/60 flex items-center justify-center transition hover:scale-105 active:scale-95" title="Zapnout/Vypnout hudbu">
+                <i id="audioIcon" class="fa-solid fa-music"></i>
+            </button>
         </div>
+    </header>
 
-        <!-- ZDE SI ÚPRAVTE TEXT DOPISU -->
-        <div class="letter" id="letter">
-            <div class="letter-header">
-                <h1>Dopis pro Tebe</h1>
-            </div>
+    <main class="min-h-full flex flex-col items-center justify-center px-4 py-20 relative z-10">
+        
+        <!-- POHLED S OBÁLKOU (Zobrazeno při načtení) -->
+        <div id="envelopeSection" class="flex flex-col items-center justify-center transition-all duration-700">
             
-            <div class="letter-greeting">
-                Moje nejdražší,
-            </div>
-
-            <div class="letter-body">
-                <p>
-                    Tento dopis patří jen Tobě. Chtěl jsem Ti vytvořit něco osobního a krásného, co si můžeš kdykoliv znovu otevřít.
-                </p>
-                <p>
-                    Zde napište svůj vlastní text. Můžete přidat několik odstavců, vzpomínek nebo cokoliv, co máte na srdci. Všechny tyto věty si jednoduše upravíte přímo v kódovém souboru.
-                </p>
-                <p>
-                    Děkuji Ti za každý společný okamžik a za to, že jsi.
+            <div class="text-center mb-8 space-y-2">
+                <h1 class="text-3xl sm:text-5xl font-handwriting text-rose-900 drop-shadow-sm font-bold">
+                    Mám pro tebe tajnou zprávu...
+                </h1>
+                <p class="text-sm sm:text-base text-rose-700/80 font-medium max-w-sm mx-auto">
+                    Klikni na obálku nebo pečeť a zjisti, co se skrývá uvnitř.
                 </p>
             </div>
 
-            <div class="letter-footer">
-                <div class="letter-date">
-                    Dnes
-                </div>
-                <div class="letter-signature">
-                    S láskou,<br>Já
+            <!-- Komponenta Obálky -->
+            <div class="envelope-wrapper my-6">
+                <div id="envelope" class="envelope cursor-pointer" onclick="openEnvelope()">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-pocket"></div>
+                    
+                    <!-- Vosková pečeť -->
+                    <div class="wax-seal" title="Klikni pro otevření">
+                        <i class="fa-solid fa-heart text-2xl"></i>
+                    </div>
+
+                    <!-- Štítek na obálce -->
+                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 bg-white/85 backdrop-blur-sm px-6 py-2 rounded-lg border border-rose-200/80 shadow-sm text-center min-w-[180px]">
+                        <!-- ZDE ZMĚŇTE JMÉNO NA OBÁLCE -->
+                        <span class="font-handwriting text-2xl text-rose-900 block font-bold">Pro Moje Zlatíčko</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Tlačítko Otevřít -->
+            <button onclick="openEnvelope()" class="mt-6 px-8 py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold rounded-full shadow-lg shadow-rose-300/50 hover:shadow-xl transition-all duration-300 flex items-center gap-3 text-base sm:text-lg group hover:scale-105 active:scale-95">
+                <span>Otevřít dopis</span>
+                <i class="fa-solid fa-envelope-open transition-transform group-hover:translate-x-1"></i>
+            </button>
+
         </div>
-    </div>
+
+        <!-- POHLED S DOPISEM (Skryto, zobrazí se po otevření obálky) -->
+        <div id="letterSection" class="hidden w-full max-w-2xl mx-auto transition-all duration-700 opacity-0 transform translate-y-8">
+            
+            <div class="parchment rounded-2xl p-6 sm:p-12 border border-amber-200/60 relative overflow-hidden">
+                <!-- Srdíčka v rozích -->
+                <div class="absolute top-3 left-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute top-3 right-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute bottom-3 left-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute bottom-3 right-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+
+                <!-- OBSAH DOPISU -->
+                <div class="space-y-6 text-slate-800">
+                    <div class="flex justify-between items-start border-b border-amber-800/10 pb-4">
+                        <!-- ZDE ZMĚŇTE DATUM -->
+                        <span class="text-sm font-serif-custom italic text-amber-900/70">14. Února 2026</span>
+                        <i class="fa-solid fa-stamp text-2xl text-rose-800/30"></i>
+                    </div>
+
+                    <!-- ZDE ZMĚŇTE OSLOVENÍ -->
+                    <h2 class="text-3xl sm:text-4xl font-handwriting text-rose-950 font-bold tracking-wide">
+                        Moje nejdražší,
+                    </h2>
+
+                    <!-- ZDE ZMĚŇTE TEXT DOPISU -->
+                    <div class="font-serif-custom text-lg sm:text-2xl leading-relaxed text-slate-800 whitespace-pre-line">
+                        Chtěl jsem ti jen napsat, jak moc pro mě znamenáš. Každý den s tebou je plný radosti, smíchu a úžasných okamžiků. 
+
+                        Děkuji ti za to, že jsi přesně taková, jaká jsi, a že děláš můj svět o tolik krásnějším.
+
+                        Jsi moje všechno! ❤️
+                    </div>
+
+                    <!-- ZDE ZMĚŇTE NEBO ODSTRANĚTE OBRÁZEK -->
+                    <div class="my-6 text-center">
+                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80" alt="Vzpomínka" class="max-h-64 mx-auto rounded-lg shadow-md border-4 border-white object-cover transform -rotate-1 hover:rotate-0 transition duration-300">
+                    </div>
+
+                    <!-- ZDE ZMĚŇTE ZÁVĚR A PODPIS -->
+                    <div class="pt-6 border-t border-amber-800/10 flex flex-col items-end">
+                        <span class="font-serif-custom italic text-amber-900/80 text-lg">S láskou a obdivem,</span>
+                        <span class="font-handwriting text-3xl sm:text-4xl text-rose-900 font-bold mt-1">Tvůj Jan</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tlačítko pro zavření nebo opětovné spuštění konfet -->
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <button onclick="closeEnvelope()" class="px-6 py-2.5 bg-white/80 hover:bg-white text-rose-900 rounded-full text-sm font-semibold shadow-sm border border-rose-200 transition hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Zavřít obálku</span>
+                </button>
+                <button onclick="triggerConfetti()" class="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full text-sm font-semibold shadow-sm transition hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-heart font-bold"></i>
+                    <span>Oslavit!</span>
+                </button>
+            </div>
+
+        </div>
+
+    </main>
 
     <script>
-        function openLetter() {
-            document.getElementById('wrapper').classList.add('open');
+        let isOpened = false;
+        let isAudioPlaying = false;
+
+        // Otevření obálky
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+
+            const envelope = document.getElementById('envelope');
+            const envelopeSection = document.getElementById('envelopeSection');
+            const letterSection = document.getElementById('letterSection');
+
+            envelope.classList.add('open');
+
+            setTimeout(() => {
+                triggerConfetti();
+            }, 500);
+
+            // Spuštění hudby po kliknutí
+            const audio = document.getElementById('romanticAudio');
+            if (!isAudioPlaying) {
+                audio.play().then(() => {
+                    isAudioPlaying = true;
+                    document.getElementById('audioIcon').className = 'fa-solid fa-volume-high text-rose-600';
+                }).catch(() => {});
+            }
+
+            setTimeout(() => {
+                envelopeSection.classList.add('hidden');
+                letterSection.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    letterSection.classList.remove('opacity-0', 'translate-y-8');
+                }, 50);
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 900);
         }
 
-        function createHearts() {
-            const container = document.getElementById('heartsBg');
-            const heartCount = 15;
+        // Zavření obálky
+        function closeEnvelope() {
+            if (!isOpened) return;
+            isOpened = false;
 
-            for (let i = 0; i < heartCount; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('floating-heart');
-                heart.innerHTML = '♥';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 8 + 6) + 's';
-                heart.style.animationDelay = (Math.random() * 5) + 's';
-                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-                container.appendChild(heart);
+            const envelope = document.getElementById('envelope');
+            const envelopeSection = document.getElementById('envelopeSection');
+            const letterSection = document.getElementById('letterSection');
+
+            letterSection.classList.add('opacity-0', 'translate-y-8');
+
+            setTimeout(() => {
+                letterSection.classList.add('hidden');
+                envelopeSection.classList.remove('hidden');
+                envelope.classList.remove('open');
+            }, 500);
+        }
+
+        // Efekt konfet
+        function triggerConfetti() {
+            confetti({
+                particleCount: 50,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#e11d48', '#f43f5e', '#fb7185', '#f472b6', '#fda4af']
+            });
+        }
+
+        // Ovládání zvuku
+        function toggleAudio() {
+            const audio = document.getElementById('romanticAudio');
+            const icon = document.getElementById('audioIcon');
+
+            if (isAudioPlaying) {
+                audio.pause();
+                isAudioPlaying = false;
+                icon.className = 'fa-solid fa-music';
+            } else {
+                audio.play();
+                isAudioPlaying = true;
+                icon.className = 'fa-solid fa-volume-high text-rose-600';
             }
         }
 
-        createHearts();
+        // Generování padajících srdíček na pozadí
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle text-rose-300/60';
+            
+            const icons = ['fa-solid fa-heart', 'fa-solid fa-heart-pulse', 'fa-solid fa-sparkles'];
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+            
+            heart.innerHTML = `<i class="${randomIcon}"></i>`;
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            heart.style.fontSize = (Math.random() * 16 + 12) + 'px';
+
+            container.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+
+        setInterval(createHearts, 800);
     </script>
 </body>
 </html>
