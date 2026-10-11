@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dopis pro Tebe</title>
-    <!-- Google Fonts pro elegantní písmo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
@@ -18,7 +17,6 @@
             --paper-color: #fcf8f2;
             --text-color: #2b1e1a;
             --accent-color: #c94a63;
-            --gold: #d4af37;
         }
 
         * {
@@ -39,7 +37,6 @@
             padding: 20px;
         }
 
-        /* Padající srdíčka na pozadí */
         .hearts-bg {
             position: fixed;
             top: 0;
@@ -72,7 +69,6 @@
             }
         }
 
-        /* Hlavní kontejner */
         .wrapper {
             position: relative;
             z-index: 10;
@@ -84,7 +80,6 @@
             max-width: 650px;
         }
 
-        /* Obálka */
         .envelope-container {
             position: relative;
             width: 100%;
@@ -135,7 +130,6 @@
             z-index: 2;
         }
 
-        /* Vosková pečeť */
         .seal {
             position: absolute;
             top: 140px;
@@ -175,7 +169,6 @@
             50% { opacity: 1; }
         }
 
-        /* Papír dopisu */
         .letter {
             position: absolute;
             top: 10px;
@@ -194,7 +187,6 @@
             transform: translateY(0);
         }
 
-        /* Stav po otevření dopisu */
         .wrapper.open .envelope-flap {
             transform: rotateX(180deg);
             z-index: 1;
@@ -218,10 +210,7 @@
             animation: slideOut 1s forwards 0.4s;
         }
 
-        .wrapper.open .envelope-container {
-            display: none;
-        }
-
+        .wrapper.open .envelope-container,
         .wrapper.open .instruction-text {
             display: none;
         }
@@ -237,7 +226,6 @@
             }
         }
 
-        /* Styling textu uvnitř dopisu */
         .letter-header {
             text-align: center;
             margin-bottom: 25px;
@@ -290,19 +278,18 @@
             font-style: italic;
         }
 
-        /* Responzivita pro mobily */
         @media (max-width: 500px) {
             .envelope-container {
                 height: 240px;
             }
-            .envelope-flap {
+            .envelope-flap, .envelope-pocket {
                 border-left-width: 175px;
                 border-right-width: 175px;
+            }
+            .envelope-flap {
                 border-top-width: 120px;
             }
             .envelope-pocket {
-                border-left-width: 175px;
-                border-right-width: 175px;
                 border-bottom-width: 120px;
             }
             .seal {
@@ -324,11 +311,9 @@
 </head>
 <body>
 
-    <!-- Efekt létajících srdíček na pozadí -->
     <div class="hearts-bg" id="heartsBg"></div>
 
     <div class="wrapper" id="wrapper">
-        <!-- Obálka -->
         <div class="envelope-container" onclick="openLetter()">
             <div class="envelope">
                 <div class="envelope-flap"></div>
@@ -341,7 +326,7 @@
             Klikni na obálku pro otevření dopisu ✉
         </div>
 
-        <!-- OBSAH DOPISU - ZDE SI UPRAVTE TEXT PODLE SEBE -->
+        <!-- ZDE SI ÚPRAVTE TEXT DOPISU -->
         <div class="letter" id="letter">
             <div class="letter-header">
                 <h1>Dopis pro Tebe</h1>
@@ -375,12 +360,10 @@
     </div>
 
     <script>
-        // Otevření obálky
         function openLetter() {
             document.getElementById('wrapper').classList.add('open');
         }
 
-        // Generování létajících srdíček na pozadí
         function createHearts() {
             const container = document.getElementById('heartsBg');
             const heartCount = 15;
