@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="cs" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tajný Dopis Pro Tebe ❤️</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Dancing Script & Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Ikony -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- JS Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+        .font-serif-custom {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .font-sans-custom {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Ambient Floating Hearts */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 8s linear infinite;
+        }
+
+        /* Envelope CSS 3D & Layers */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            background-color: #f3d5d8;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 20px 40px rgba(186, 110, 120, 0.25), 0 10px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 640px) {
+            .envelope {
+                width: 440px;
+                height: 290px;
+            }
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 0, 50% 55%, 100% 0);
+            background-color: #e8bdc1;
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s, z-index 0.1s 0.5s;
+            z-index: 4;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope-pocket {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 100%, 50% 45%, 100% 100%, 0 100%, 0 0, 50% 45%, 0 100%, 100% 0, 50% 45%, 100% 100%);
+            background-color: #ebd2d5;
+            z-index: 3;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        /* Wax Seal */
+        .wax-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #b91c1c, #881337);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fef2f2;
+            box-shadow: 0 4px 10px rgba(136, 19, 55, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .wax-seal:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(136, 19, 55, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+        }
+
+        .envelope.open .wax-seal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Letter Parchment */
+        .parchment {
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#f3ece1 1px, transparent 0);
+            background-size: 24px 24px;
+            box-shadow: inset 0 0 40px rgba(210, 180, 140, 0.2), 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        /* Custom Scrollbar for Letter Content */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(243, 236, 225, 0.5);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d4a3a8;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body class="h-full bg-gradient-to-br from-rose-100 via-pink-50 to-amber-50 text-slate-800 font-sans-custom overflow-x-hidden selection:bg-rose-200 selection:text-rose-900">
+
+    <div id="heartsContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Audio Player (Soft Ambient Melody using Royalty-Free Audio) -->
+    <audio id="romanticAudio" loop preload="auto">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-view-2856.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Top Bar Navigation Controls -->
+    <header class="fixed top-0 left-0 right-0 z-40 p-4 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center gap-2 bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-rose-200/50">
+            <i class="fa-solid fa-heart text-rose-500 text-sm"></i>
+            <span class="text-xs font-semibold text-rose-900 tracking-wide uppercase">Dopis s Láskou</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Audio Toggle Button -->
+            <button id="audioToggle" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-white/80 hover:bg-white text-rose-700 shadow-sm border border-rose-200/60 flex items-center justify-center transition hover:scale-105 active:scale-95" title="Zapnout/Vypnout hudbu">
+                <i id="audioIcon" class="fa-solid fa-music"></i>
+            </button>
+
+            <!-- Hearts Toggle -->
+            <button onclick="toggleHearts()" class="w-10 h-10 rounded-full bg-white/80 hover:bg-white text-rose-700 shadow-sm border border-rose-200/60 flex items-center justify-center transition hover:scale-105 active:scale-95" title="Přepnout efekty srdíček">
+                <i class="fa-solid fa-sparkles text-sm"></i>
+            </button>
+
+            <!-- Mode Switcher (Edit vs Recipient View) -->
+            <button id="editToggleBtn" onclick="toggleEditMode()" class="px-3.5 py-2 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium shadow-md transition flex items-center gap-1.5 hover:scale-105 active:scale-95">
+                <i id="editIcon" class="fa-solid fa-pen-to-square"></i>
+                <span id="editBtnText">Upravit text</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="min-h-full flex flex-col items-center justify-center px-4 py-20 relative z-10">
+        
+        <!-- ENVELOPE STATE (Closed View) -->
+        <div id="envelopeSection" class="flex flex-col items-center justify-center transition-all duration-700">
+            
+            <div class="text-center mb-8 space-y-2">
+                <h1 id="envelopeHeader" class="text-3xl sm:text-5xl font-handwriting text-rose-900 drop-shadow-sm font-bold">
+                    Mám pro tebe tajnou zprávu...
+                </h1>
+                <p class="text-sm sm:text-base text-rose-700/80 font-medium max-w-sm mx-auto">
+                    Klikni na obálku nebo pečeť a zjisti, co se skrývá uvnitř.
+                </p>
+            </div>
+
+            <!-- Envelope Component -->
+            <div class="envelope-wrapper my-6">
+                <div id="envelope" class="envelope cursor-pointer" onclick="openEnvelope()">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-pocket"></div>
+                    
+                    <!-- Wax Seal Badge -->
+                    <div class="wax-seal" title="Klikni pro otevření">
+                        <i class="fa-solid fa-heart text-2xl"></i>
+                    </div>
+
+                    <!-- Front Label -->
+                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 bg-white/85 backdrop-blur-sm px-6 py-2 rounded-lg border border-rose-200/80 shadow-sm text-center min-w-[180px]">
+                        <span id="recipientLabel" class="font-handwriting text-2xl text-rose-900 block font-bold">Pro Moje Zlatíčko</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Button -->
+            <button onclick="openEnvelope()" class="mt-6 px-8 py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold rounded-full shadow-lg shadow-rose-300/50 hover:shadow-xl transition-all duration-300 flex items-center gap-3 text-base sm:text-lg group hover:scale-105 active:scale-95">
+                <span>Otevřít dopis</span>
+                <i class="fa-solid fa-envelope-open transition-transform group-hover:translate-x-1"></i>
+            </button>
+
+        </div>
+
+        <!-- LETTER CONTENT STATE (Open View - Initially Hidden) -->
+        <div id="letterSection" class="hidden w-full max-w-2xl mx-auto transition-all duration-700 opacity-0 transform translate-y-8">
+            
+            <div class="parchment rounded-2xl p-6 sm:p-12 border border-amber-200/60 relative overflow-hidden">
+                <!-- Decorative Corner Badges -->
+                <div class="absolute top-3 left-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute top-3 right-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute bottom-3 left-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+                <div class="absolute bottom-3 right-3 text-amber-900/20 text-xl"><i class="fa-solid fa-heart"></i></div>
+
+                <!-- READ MODE DISPLAY -->
+                <div id="readModeView" class="space-y-6 text-slate-800">
+                    <div class="flex justify-between items-start border-b border-amber-800/10 pb-4">
+                        <span id="displayDate" class="text-sm font-serif-custom italic text-amber-900/70">14. Února 2026</span>
+                        <i class="fa-solid fa-stamp text-2xl text-rose-800/30"></i>
+                    </div>
+
+                    <h2 id="displaySalutation" class="text-3xl sm:text-4xl font-handwriting text-rose-950 font-bold tracking-wide">
+                        Moje nejdražší,
+                    </h2>
+
+                    <div id="displayBody" class="font-serif-custom text-lg sm:text-2xl leading-relaxed text-slate-800 whitespace-pre-line">
+                        Chtěl jsem ti jen napsat, jak moc pro mě znamenáš. Každý den s tebou je plný radosti, smíchu a úžasných okamžiků. 
+
+                        Děkuji ti za to, že jsi přesně taková, jaká jsi, a že děláš můj svět o tolik krásnějším.
+
+                        Jsi moje všechno! ❤️
+                    </div>
+
+                    <!-- Custom Photo/Sticker Image Container -->
+                    <div id="displayPhotoContainer" class="my-6 text-center">
+                        <img id="displayPhoto" src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80" alt="Vzpomínka" class="max-h-64 mx-auto rounded-lg shadow-md border-4 border-white object-cover transform -rotate-1 hover:rotate-0 transition duration-300">
+                    </div>
+
+                    <div class="pt-6 border-t border-amber-800/10 flex flex-col items-end">
+                        <span id="displayValediction" class="font-serif-custom italic text-amber-900/80 text-lg">S láskou a obdivem,</span>
+                        <span id="displaySignature" class="font-handwriting text-3xl sm:text-4xl text-rose-900 font-bold mt-1">Tvůj Jan</span>
+                    </div>
+                </div>
+
+                <!-- EDIT MODE FORM (Hidden by default) -->
+                <div id="editModeView" class="hidden space-y-5">
+                    <div class="bg-rose-50 p-3 rounded-lg border border-rose-200 text-xs text-rose-800 flex items-center gap-2">
+                        <i class="fa-solid fa-info-circle text-rose-600 text-base"></i>
+                        <span>Zde můžete upravit text. Změny se ihned uloží. Pro sdílení přepněte zpět do pohledu příjemce.</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Jméno na obálce</label>
+                        <input type="text" id="inputRecipient" class="w-full bg-white border border-rose-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-rose-500 font-sans-custom">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Datum</label>
+                            <input type="text" id="inputDate" class="w-full bg-white border border-rose-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-rose-500 font-sans-custom">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Oslovení</label>
+                            <input type="text" id="inputSalutation" class="w-full bg-white border border-rose-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-rose-500 font-sans-custom">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Hlavní text dopisu</label>
+                        <textarea id="inputBody" rows="6" class="w-full bg-white border border-rose-200 rounded-lg p-3 text-sm focus:outline-none focus:border-rose-500 font-sans-custom leading-relaxed custom-scroll"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Odkaz na fotografii (URL)</label>
+                        <input type="url" id="inputPhotoUrl" placeholder="https://..." class="w-full bg-white border border-rose-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-rose-500 font-sans-custom">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Závěrečná fráze</label>
+                            <input type="text" id="inputValediction" class="w-full bg-white border border-rose-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-rose-500 font-sans-custom">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Podpis</label>
+                            <input type="text" id="inputSignature" class="w-full bg-white border border-rose-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-rose-500 font-sans-custom">
+                        </div>
+                    </div>
+
+                    <div class="pt-3 flex justify-between items-center">
+                        <button onclick="resetToDefaultText()" class="text-xs text-rose-700 hover:text-rose-900 font-medium underline">
+                            Obnovit původní text
+                        </button>
+                        <button onclick="saveAndCloseEdit()" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-semibold shadow transition">
+                            Uložit a Hotovo
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Action Controls when Letter is Open -->
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <button onclick="closeEnvelope()" class="px-6 py-2.5 bg-white/80 hover:bg-white text-rose-900 rounded-full text-sm font-semibold shadow-sm border border-rose-200 transition hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Zavřít obálku</span>
+                </button>
+                <button onclick="triggerConfetti()" class="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full text-sm font-semibold shadow-sm transition hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-heart font-bold"></i>
+                    <span>Oslavit s konfetami!</span>
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // State variables
+        let isOpened = false;
+        let isEditing = false;
+        let isAudioPlaying = false;
+        let showHearts = true;
+
+        // Default Letter Content
+        const defaultLetterData = {
+            recipient: "Pro Moje Zlatíčko",
+            date: "14. Února 2026",
+            salutation: "Moje nejdražší,",
+            body: `Chtěl jsem ti jen napsat, jak moc pro mě znamenáš. Každý den s tebou je plný radosti, smíchu a úžasných okamžiků.\n\nDěkuji ti za to, že jsi přesně taková, jaká jsi, a že děláš můj svět o tolik krásnějším.\n\nJsi moje všechno! ❤️`,
+            photoUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80",
+            valediction: "S láskou a obdivem,",
+            signature: "Tvůj Jan"
+        };
+
+        let letterData = { ...defaultLetterData };
+
+        // Load Saved Data from LocalStorage on Startup
+        function loadLetterData() {
+            const saved = localStorage.getItem('custom_romantic_letter');
+            if (saved) {
+                try {
+                    letterData = JSON.parse(saved);
+                } catch (e) {
+                    letterData = { ...defaultLetterData };
+                }
+            }
+            updateDOMWithLetterData();
+        }
+
+        // Update UI HTML elements with current letterData
+        function updateDOMWithLetterData() {
+            document.getElementById('recipientLabel').innerText = letterData.recipient || "Pro Moje Zlatíčko";
+            document.getElementById('displayDate').innerText = letterData.date || "";
+            document.getElementById('displaySalutation').innerText = letterData.salutation || "";
+            document.getElementById('displayBody').innerText = letterData.body || "";
+            document.getElementById('displayValediction').innerText = letterData.valediction || "";
+            document.getElementById('displaySignature').innerText = letterData.signature || "";
+
+            const photoEl = document.getElementById('displayPhoto');
+            const photoContainer = document.getElementById('displayPhotoContainer');
+            if (letterData.photoUrl && letterData.photoUrl.trim() !== "") {
+                photoEl.src = letterData.photoUrl;
+                photoContainer.classList.remove('hidden');
+            } else {
+                photoContainer.classList.add('hidden');
+            }
+
+            // Sync Inputs
+            document.getElementById('inputRecipient').value = letterData.recipient;
+            document.getElementById('inputDate').value = letterData.date;
+            document.getElementById('inputSalutation').value = letterData.salutation;
+            document.getElementById('inputBody').value = letterData.body;
+            document.getElementById('inputPhotoUrl').value = letterData.photoUrl || "";
+            document.getElementById('inputValediction').value = letterData.valediction;
+            document.getElementById('inputSignature').value = letterData.signature;
+        }
+
+        // Save data to localStorage
+        function saveLetterData() {
+            letterData = {
+                recipient: document.getElementById('inputRecipient').value,
+                date: document.getElementById('inputDate').value,
+                salutation: document.getElementById('inputSalutation').value,
+                body: document.getElementById('inputBody').value,
+                photoUrl: document.getElementById('inputPhotoUrl').value,
+                valediction: document.getElementById('inputValediction').value,
+                signature: document.getElementById('inputSignature').value
+            };
+            localStorage.setItem('custom_romantic_letter', JSON.stringify(letterData));
+            updateDOMWithLetterData();
+        }
+
+        function resetToDefaultText() {
+            if (confirm("Opravdu chcete obnovit původní text dopisu?")) {
+                letterData = { ...defaultLetterData };
+                saveLetterData();
+            }
+        }
+
+        // Open Envelope Animation logic
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+
+            const envelope = document.getElementById('envelope');
+            const envelopeSection = document.getElementById('envelopeSection');
+            const letterSection = document.getElementById('letterSection');
+
+            // Play open flap animation
+            envelope.classList.add('open');
+
+            // Trigger Confetti
+            setTimeout(() => {
+                triggerConfetti();
+            }, 500);
+
+            // Auto-start music on user interaction if not playing
+            const audio = document.getElementById('romanticAudio');
+            if (!isAudioPlaying) {
+                audio.play().then(() => {
+                    isAudioPlaying = true;
+                    document.getElementById('audioIcon').className = 'fa-solid fa-volume-high text-rose-600';
+                }).catch(() => {
+                    // Auto-play blocked by browser policy
+                });
+            }
+
+            // Hide Envelope and show Parchment Letter
+            setTimeout(() => {
+                envelopeSection.classList.add('hidden');
+                letterSection.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    letterSection.classList.remove('opacity-0', 'translate-y-8');
+                }, 50);
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 900);
+        }
+
+        // Close Envelope Logic
+        function closeEnvelope() {
+            if (!isOpened) return;
+            isOpened = false;
+
+            const envelope = document.getElementById('envelope');
+            const envelopeSection = document.getElementById('envelopeSection');
+            const letterSection = document.getElementById('letterSection');
+
+            letterSection.classList.add('opacity-0', 'translate-y-8');
+
+            setTimeout(() => {
+                letterSection.classList.add('hidden');
+                envelopeSection.classList.remove('hidden');
+                envelope.classList.remove('open');
+            }, 500);
+        }
+
+        // Confetti Heart Explosion
+        function triggerConfetti() {
+            confetti({
+                particleCount: 50,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#e11d48', '#f43f5e', '#fb7185', '#f472b6', '#fda4af']
+            });
+        }
+
+        // Toggle Edit Mode vs Read Mode
+        function toggleEditMode() {
+            isEditing = !isEditing;
+
+            const readModeView = document.getElementById('readModeView');
+            const editModeView = document.getElementById('editModeView');
+            const editBtnText = document.getElementById('editBtnText');
+            const editIcon = document.getElementById('editIcon');
+
+            if (isEditing) {
+                readModeView.classList.add('hidden');
+                editModeView.classList.remove('hidden');
+                editBtnText.innerText = "Pohled příjemce";
+                editIcon.className = "fa-solid fa-eye";
+
+                // Automatically open letter if editing from envelope view
+                if (!isOpened) {
+                    openEnvelope();
+                }
+            } else {
+                saveLetterData();
+                readModeView.classList.remove('hidden');
+                editModeView.classList.add('hidden');
+                editBtnText.innerText = "Upravit text";
+                editIcon.className = "fa-solid fa-pen-to-square";
+            }
+        }
+
+        function saveAndCloseEdit() {
+            saveLetterData();
+            toggleEditMode();
+        }
+
+        // Audio Controls
+        function toggleAudio() {
+            const audio = document.getElementById('romanticAudio');
+            const icon = document.getElementById('audioIcon');
+
+            if (isAudioPlaying) {
+                audio.pause();
+                isAudioPlaying = false;
+                icon.className = 'fa-solid fa-music';
+            } else {
+                audio.play();
+                isAudioPlaying = true;
+                icon.className = 'fa-solid fa-volume-high text-rose-600';
+            }
+        }
+
+        // Ambient Floating Hearts Generator
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            if (!showHearts) return;
+
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle text-rose-300/60';
+            
+            // Random Heart Icons
+            const icons = ['fa-solid fa-heart', 'fa-solid fa-heart-pulse', 'fa-solid fa-sparkles'];
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+            
+            heart.innerHTML = `<i class="${randomIcon}"></i>`;
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            heart.style.fontSize = (Math.random() * 16 + 12) + 'px';
+
+            container.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+
+        function toggleHearts() {
+            showHearts = !showHearts;
+            const container = document.getElementById('heartsContainer');
+            if (!showHearts) {
+                container.innerHTML = '';
+            }
+        }
+
+        // Periodic Background Hearts Generation
+        setInterval(() => {
+            if (showHearts) {
+                createHearts();
+            }
+        }, 800);
+
+        // On Load
+        window.onload = function() {
+            loadLetterData();
+        };
+    </script>
+</body>
+</html>
